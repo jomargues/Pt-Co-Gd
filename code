@@ -1,0 +1,168 @@
+######################################################################################################
+
+# "Achador" Numérico de Autoenergias das Ondas de Spin (Pt-Co-Gd)
+
+######################################################################################################
+
+# Importação de Módulos
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+######################################################################################################
+
+# Desenvolvimento
+
+print('')
+ans = float(input('Escolha a simulação: '))
+
+if ans == 1:  # Q = q*(1,1,0)
+
+    print('')
+    print("### DISPERSÃO Q = q*(1,1,0) ###")
+    print('')
+
+    s2 = np.sqrt(2)
+    pi = np.pi
+
+    a0 = 3.92  # Escolhendo um valor para o parâmetro de rede;
+    J = 1  # Escolhendo a constante de exchange;
+    K = 2
+    L = 3
+    S = 1  # Escolhendo o spin;
+
+    q = np.linspace(-2 * pi/a0, 2 * pi/a0, 2000)  # Vetor de onda numérico;
+    Q = []
+
+    for i in q:
+        Q.append(i)
+
+    dotI = []  # Produtos internos <q,ri-rj>
+    dotII = []
+    dotIII = []
+
+    for j in Q:
+        dotI.append(j * a0 * s2 / 2)
+        dotII.append(j * a0 * s2)
+        dotIII.append(j*a0*1/2)
+
+    cosI = []
+    cosII = []
+    cosIII = []
+
+    for i in range(len(Q)):
+        cosI.append(np.cos(dotI[i]))
+        cosII.append(np.cos(dotII[i]))
+        cosIII.append(np.cos(dotIII[i]))
+
+    M = []
+
+    for i in range(len(Q)):
+        M1 = [2 * J * S * (8 - 4 * cosI[i] - 2 * cosII[i]), -2 * K * S*(1+cosIII[i])]
+        M2 = [-2 * K * S*(1+cosIII[i]), 2 * L * S * (8 - 4 * cosI[i] - 2 * cosII[i])]
+
+        M.append(np.array([M1, M2]))
+
+    eig = []
+
+    for i in range(len(Q)):
+        eigvals = np.linalg.eigvals(M[i])
+
+        eig.append(eigvals)
+
+    E1 = []
+    E2 = []
+
+    for i in range(len(Q)):
+        e1 = eig[i][0]
+        e2 = eig[i][1]
+
+        E1.append(e1)
+        E2.append(e2)
+
+    plt.title('Dispersão de magnon na direção Q = q(1,1,0)', fontweight='bold')
+    plt.xlabel('Vetor de espalhamento Q (1/Å)')
+    plt.ylabel('Energia (JS)')
+
+    plt.scatter(q, E1, color='r')
+    plt.scatter(q, E2, color='b')
+
+    plt.show()
+
+if ans == 2:  # Q = q*(1,2,1)
+
+    print('')
+    print("### DISPERSÃO Q = q*(1,2,1) ###")
+    print('')
+
+    a = 0.29
+    s3 = np.sqrt(3)
+    pi = np.pi
+
+    a0 = 3.92  # Escolhendo um valor para o parâmetro de rede;
+    J = 1  # Escolhendo a constante de exchange;
+    K = 2
+    L = 3
+    S = 1  # Escolhendo o spin;
+
+    q = np.linspace(-2 * pi/a0, 2 * pi/a0, 3000)  # Vetor de onda numérico;
+    Q = []
+
+    for i in q:
+        Q.append(i)
+
+    dotI = []  # Produtos internos <q,ri-rj>
+    dotII = []
+    dotIII = []
+
+    for j in Q:
+        dotI.append(j * a0 * s3 / 2)
+        dotII.append(j*a0*2*a)
+        dotIII.append(j*a0*a)
+
+    cosI = []
+    cosII = []
+    cosIII = []
+    sin = []
+
+    for i in range(len(Q)):
+        cosI.append(np.cos(dotI[i]))
+        cosII.append(np.cos(dotII[i]))
+        cosIII.append(np.cos(dotIII[i]))
+        sin.append(np.sin(dotIII[i]))
+
+    M = []
+
+    for i in range(len(Q)):
+        M1 = [2 * J * S * (5-4*cosI[i]), 2 * K * S*(2*1j*sin[i]*(1-cosIII[i])+cosII[i]+2*cosIII[i])]
+        M2 = [2 * K * S*(2*1j*sin[i]*(1-cosIII[i])+cosII[i]+2*cosIII[i]), 2 * L * S * (5-4*cosI[i])]
+
+        M.append(np.array([M1, M2]))
+
+    eig = []
+
+    for i in range(len(Q)):
+        eigvals = np.linalg.eigvals(M[i])
+
+        eig.append(eigvals)
+
+    E1 = []
+    E2 = []
+
+    for i in range(len(Q)):
+        e1 = eig[i][0]
+        e2 = eig[i][1]
+
+        E1.append(e1)
+        E2.append(e2)
+
+    plt.title('Dispersão de magnon na direção Q = q(1,2,1)', fontweight='bold')
+    plt.xlabel('Vetor de espalhamento Q (1/Å)')
+    plt.ylabel('Energia (JS)')
+
+    plt.scatter(q, E1, color='r')
+
+
+    plt.show()
+
+######################################################################################################
